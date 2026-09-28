@@ -1,0 +1,84 @@
+@import "tailwindcss";
+
+@layer base {
+  * {
+    border-color: rgba(0, 245, 155, 0.1);
+  }
+  body {
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background-color: #04140e;
+    color: #f1f7f4;
+    overflow-x: hidden;
+  }
+}
+
+/* Condensed & Display Typography matching Reference */
+.font-hero-display {
+  font-family: 'Syne', 'Plus Jakarta Sans', sans-serif;
+  letter-spacing: -0.02em;
+}
+
+.font-syne {
+  font-family: 'Syne', sans-serif;
+}
+
+/* Atmospheric Emerald Ambient Glow behind hero subject */
+.hero-ambient-glow {
+  background: radial-gradient(ellipse 70% 60% at 50% 45%, rgba(0, 245, 155, 0.32) 0%, rgba(16, 185, 129, 0.2) 35%, rgba(6, 78, 59, 0.08) 65%, transparent 80%);
+}
+
+.hero-vignette {
+  background: radial-gradient(circle at 50% 50%, transparent 35%, rgba(4, 20, 14, 0.8) 85%, rgba(4, 20, 14, 1) 100%);
+}
+
+/* Mint Glow Button Aura matching reference "Get in touch" */
+.mint-glow-btn {
+  position: relative;
+  box-shadow: 0 0 35px 8px rgba(0, 245, 155, 0.4), 0 0 70px 20px rgba(16, 185, 129, 0.2);
+}
+
+.mint-glow-btn::before {
+  content: '';
+  position: absolute;
+  inset: -8px;
+  background: radial-gradient(circle, rgba(0, 245, 155, 0.5) 0%, rgba(16, 185, 129, 0.25) 45%, transparent 70%);
+  border-radius: 9999px;
+  z-index: -1;
+  pointer-events: none;
+  filter: blur(10px);
+}
+
+/* Smooth fade out mask for portrait bottom to blend into dark backdrop */
+.fade-portrait-bottom {
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 75%, rgba(0, 0, 0, 0.4) 90%, rgba(0, 0, 0, 0) 100%);
+  -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 75%, rgba(0, 0, 0, 0.4) 90%, rgba(0, 0, 0, 0) 100%);
+}
+
+/* Glassmorphism card styles in rich dark emerald */
+.dark-glass {
+  background-color: rgba(6, 32, 22, 0.65);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(0, 245, 155, 0.12);
+}
+
+.dark-glass-hover:hover {
+  background-color: rgba(9, 44, 31, 0.85);
+  border-color: rgba(0, 245, 155, 0.35);
+  box-shadow: 0 10px 30px -10px rgba(0, 245, 155, 0.2);
+}
+
+/* Custom emerald scrollbar */
+::-webkit-scrollbar {
+  width: 7px;
+}
+::-webkit-scrollbar-track {
+  background: #03110b;
+}
+::-webkit-scrollbar-thumb {
+  background: #0d422f;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #00f59b;
+}
