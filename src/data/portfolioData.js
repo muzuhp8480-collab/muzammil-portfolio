@@ -18,7 +18,8 @@ export const personalInfo = {
   instagramHandle: "muzuai",
   linkedin: "https://www.linkedin.com/in/muzammilparappallath",
   linkedinHandle: "muzammilparappallath",
-  whatsapp: "+918590368480"
+  whatsapp: "+918590368480",
+  driveWorkLink: "https://drive.google.com/drive/folders/1sQChAIkBeGG1D2EpIk2Gc7YiCQJQ6vLx?usp=drive_link"
 };
 
 export const heroPillars = [
