@@ -91,12 +91,6 @@ export default function Hero({ onOpenContact, onExploreWork }) {
               </span>
             </h1>
 
-            {/* Mobile / Tablet Badge */}
-            <div className="mt-4 sm:mt-6 mb-2 flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-[#06291b]/90 border border-[#00f59b]/25 text-[#00f59b] text-xs font-semibold">
-              <span className="w-2 h-2 rounded-full bg-[#00f59b] animate-ping" />
-              <span>Available for Collaborations</span>
-            </div>
-
             {/* Mobile & Tablet Dedicated Portrait Card */}
             <div className="lg:hidden w-full max-w-[260px] sm:max-w-[300px] aspect-[4/5] mx-auto my-5 relative rounded-3xl overflow-hidden border border-[#00f59b]/30 shadow-2xl bg-[#03150e]">
               <img
