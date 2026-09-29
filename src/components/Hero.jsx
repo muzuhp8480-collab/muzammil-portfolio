@@ -130,7 +130,7 @@ export default function Hero({ onOpenContact, onExploreWork }) {
               {/* Action Buttons: [ View My Work ] & [ Contact Me ] with full-width mobile support */}
               <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 w-full sm:w-auto">
                 <a
-                  href={personalInfo.driveWorkLink || "https://drive.google.com/drive/folders/1sQChAIkBeGG1D2EpIk2Gc7YiCQJQ6vLx?usp=drive_link"}
+                  href={personalInfo.driveWorkLink}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-full sm:w-auto px-7 py-3.5 rounded-full bg-white text-[#04160f] hover:bg-[#00f59b] hover:text-[#04160f] font-bold text-xs sm:text-sm inline-flex items-center justify-center gap-2 shadow-xl shadow-black/40 transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer"
