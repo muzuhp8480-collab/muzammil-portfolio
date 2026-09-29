@@ -1,9 +1,23 @@
-import React, { useState } from 'react';
-import { Flame, Eye, Zap, Camera, TrendingUp, Sparkles, ArrowRight, ShieldCheck } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { 
+  Flame, 
+  Eye, 
+  Zap, 
+  Camera, 
+  TrendingUp, 
+  Sparkles, 
+  ChevronLeft, 
+  ChevronRight,
+  ShieldCheck,
+  ArrowRight
+} from 'lucide-react';
 import { resultsPillars, personalInfo } from '../data/portfolioData';
 
 export default function Results() {
-  const [activeIdx, setActiveIdx] = useState(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+  const [touchStart, setTouchStart] = useState(null);
+  const [touchEnd, setTouchEnd] = useState(null);
 
   const iconMap = {
     Flame,
@@ -13,131 +27,251 @@ export default function Results() {
     TrendingUp,
   };
 
-  const workflowSteps = [
-    { step: "01", name: "Visual Hook", desc: "Instant 3-sec capture" },
-    { step: "02", name: "Story & Emotion", desc: "Human connection" },
-    { step: "03", name: "Cinema 4K Polish", desc: "Studio-grade diffusion" },
-    { step: "04", name: "Growth & Recall", desc: "Measurable brand impact" },
-  ];
+  const totalSlides = resultsPillars.length;
+
+  const nextSlide = () => {
+    setActiveIndex((prev) => (prev + 1) % totalSlides);
+  };
+
+  const prevSlide = () => {
+    setActiveIndex((prev) => (prev - 1 + totalSlides) % totalSlides);
+  };
+
+  // Touch Swipe Handlers for mobile & tablet
+  const minSwipeDistance = 45;
+
+  const handleTouchStart = (e) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchMove = (e) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    const distance = touchStart - touchEnd;
+    if (distance > minSwipeDistance) {
+      nextSlide();
+    } else if (distance < -minSwipeDistance) {
+      prevSlide();
+    }
+  };
+
+  // Auto-play timer with pause on hover
+  useEffect(() => {
+    if (isPaused) return;
+    const timer = setInterval(() => {
+      setActiveIndex((prev) => (prev + 1) % totalSlides);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, [isPaused, totalSlides]);
 
   return (
-    <section id="results" className="py-20 sm:py-28 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto scroll-mt-20">
+    <section 
+      id="results" 
+      className="py-20 sm:py-28 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto scroll-mt-20 select-none"
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+    >
       
-      {/* Section Header with Large Editorial Manifesto */}
-      <div className="text-center max-w-3xl mx-auto mb-16 sm:mb-20">
+      {/* Section Header */}
+      <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-14">
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#00f59b]/10 border border-[#00f59b]/25 text-[#00f59b] text-xs font-semibold mb-4">
           <Sparkles className="w-3.5 h-3.5" />
-          <span>Core Focus & Impact</span>
+          <span>Interactive Core Focus</span>
         </div>
 
-        <h2 className="text-3xl sm:text-5xl lg:text-6xl font-bold text-white tracking-tight mb-6">
+        <h2 className="text-3xl sm:text-5xl lg:text-6xl font-bold text-white tracking-tight mb-4">
           What I <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-[#a7f3d0] to-[#00f59b]">Focus On</span>
         </h2>
 
-        <p className="text-lg sm:text-2xl text-stone-200 font-medium leading-relaxed max-w-2xl mx-auto">
+        <p className="text-base sm:text-xl text-stone-300 font-medium leading-relaxed max-w-2xl mx-auto">
           "{personalInfo.resultsIntro}"
+        </p>
+
+        {/* Mobile Swipe Hint */}
+        <p className="text-[11px] text-[#00f59b] sm:hidden mt-3 font-mono flex items-center justify-center gap-1.5 opacity-80">
+          <span>←</span> Swipe left or right to explore <span>→</span>
         </p>
       </div>
 
-      {/* 5-Column Metric Horizon (Zero Box Cards!) */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 border-y border-white/10 divide-y sm:divide-y-0 sm:divide-x divide-white/10">
+      {/* Top Interactive Capsule Bar: Click any to jump directly */}
+      <div className="hidden sm:flex items-center justify-center gap-2 mb-8 flex-wrap">
         {resultsPillars.map((pillar, idx) => {
-          const Icon = iconMap[pillar.icon] || Sparkles;
-          const isHovered = activeIdx === idx;
-
+          const isActive = activeIndex === idx;
+          const IconComp = iconMap[pillar.icon] || Sparkles;
           return (
-            <div
+            <button
               key={idx}
-              onMouseEnter={() => setActiveIdx(idx)}
-              onMouseLeave={() => setActiveIdx(null)}
-              className={`p-6 sm:p-7 lg:p-6 xl:p-8 flex flex-col justify-between transition-all duration-300 relative cursor-default group overflow-hidden ${
-                isHovered ? 'bg-gradient-to-b from-[#00f59b]/15 via-[#00f59b]/5 to-transparent' : 'hover:bg-white/[0.02]'
-              } ${idx === 4 ? 'sm:col-span-2 lg:col-span-1' : ''}`}
+              type="button"
+              onClick={() => setActiveIndex(idx)}
+              className={`px-4 py-2 rounded-full text-xs font-semibold transition-all duration-300 flex items-center gap-2 cursor-pointer ${
+                isActive
+                  ? 'bg-[#00f59b] text-[#04160f] shadow-lg shadow-[#00f59b]/30 scale-105'
+                  : 'bg-white/5 hover:bg-white/10 text-stone-300 hover:text-white border border-white/10'
+              }`}
             >
-              {/* Subtle top indicator bar */}
-              <div className={`absolute top-0 left-0 right-0 h-1 transition-all duration-300 ${
-                isHovered ? 'bg-[#00f59b]' : 'bg-transparent'
-              }`} />
-
-              <div>
-                {/* Top Row: Index & Icon */}
-                <div className="flex items-center justify-between mb-8">
-                  <span className={`font-mono text-xs font-bold transition-colors ${
-                    isHovered ? 'text-[#00f59b]' : 'text-stone-500 group-hover:text-[#00f59b]'
-                  }`}>
-                    0{idx + 1}
-                  </span>
-
-                  <div className={`w-9 h-9 rounded-xl flex items-center justify-center transition-all ${
-                    isHovered 
-                      ? 'bg-[#00f59b] text-[#04160f] scale-110 shadow-md shadow-[#00f59b]/30' 
-                      : 'bg-[#00f59b]/15 text-[#00f59b] group-hover:bg-[#00f59b]/25'
-                  }`}>
-                    <Icon className="w-4 h-4" />
-                  </div>
-                </div>
-
-                {/* Giant Typographic Stat */}
-                <div className="mb-4">
-                  <div className="font-mono text-3xl sm:text-4xl xl:text-5xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-b from-white via-white to-[#00f59b] transition-transform duration-300 group-hover:scale-105 origin-left">
-                    {pillar.stat}
-                  </div>
-                  <div className="text-[11px] uppercase tracking-wider text-[#00f59b] font-mono font-semibold mt-1">
-                    {pillar.statLabel}
-                  </div>
-                </div>
-
-                {/* Pillar Title */}
-                <h3 className="text-lg font-bold text-white mb-2 group-hover:text-[#00f59b] transition-colors">
-                  {pillar.title}
-                </h3>
-
-                {/* Pillar Description */}
-                <p className="text-stone-400 text-xs sm:text-sm leading-relaxed mb-6 font-normal">
-                  {pillar.desc}
-                </p>
-              </div>
-
-              {/* Bottom Highlight Tag */}
-              <div className="pt-4 border-t border-white/5">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-stone-300 group-hover:text-[#00f59b] transition-colors inline-flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#00f59b]" />
-                  {pillar.highlight}
-                </span>
-              </div>
-            </div>
+              <IconComp className={`w-3.5 h-3.5 ${isActive ? 'text-[#04160f]' : 'text-[#00f59b]'}`} />
+              <span>{pillar.title}</span>
+            </button>
           );
         })}
       </div>
 
-      {/* Production Formula Strip: How It All Connects */}
-      <div className="mt-12 sm:mt-16 pt-8 border-t border-white/10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-        <div>
-          <span className="text-xs font-bold uppercase tracking-widest text-[#00f59b] flex items-center gap-2 mb-1">
-            <ShieldCheck className="w-4 h-4" />
-            <span>Execution Standard</span>
-          </span>
-          <p className="text-stone-300 text-sm">
-            Every project follows a tested visual framework built for maximum retention and brand recall.
-          </p>
+      {/* The Animated Swipe Carousel Stage */}
+      <div className="relative">
+        
+        {/* Main Swipeable Viewport */}
+        <div 
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+          className="relative w-full overflow-hidden rounded-[32px] sm:rounded-[44px] bg-gradient-to-br from-[#06291b]/95 via-[#031d13]/90 to-[#020e09] border border-[#00f59b]/25 shadow-2xl backdrop-blur-xl"
+        >
+          
+          {/* Ambient Glowing Halo in Background */}
+          <div 
+            className="pointer-events-none absolute inset-0 flex items-center justify-center overflow-hidden"
+            aria-hidden="true"
+          >
+            <div 
+              className="w-[500px] h-[500px] rounded-full blur-[120px] opacity-25 transition-all duration-700"
+              style={{
+                background: 'radial-gradient(circle, rgba(0, 245, 155, 0.6) 0%, transparent 70%)'
+              }}
+            />
+          </div>
+
+          {/* Sliding Track */}
+          <div 
+            className="flex transition-transform duration-500 ease-out"
+            style={{ transform: `translateX(-${activeIndex * 100}%)` }}
+          >
+            {resultsPillars.map((pillar, idx) => {
+              const IconComponent = iconMap[pillar.icon] || Sparkles;
+              return (
+                <div 
+                  key={idx} 
+                  className="w-full shrink-0 p-7 sm:p-12 lg:p-16 flex flex-col justify-between relative z-10"
+                >
+                  
+                  {/* Top Bar inside slide: Category badge & Counter */}
+                  <div className="flex items-center justify-between pb-6 border-b border-white/10 mb-8 sm:mb-10">
+                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-[#00f59b]/25 text-xs text-[#00f59b] font-medium">
+                      <IconComponent className="w-3.5 h-3.5" />
+                      <span>{pillar.highlight}</span>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <span className="font-mono text-sm font-bold text-[#00f59b]">
+                        0{idx + 1}
+                      </span>
+                      <span className="text-stone-500 text-xs font-mono">/ 0{totalSlides}</span>
+                    </div>
+                  </div>
+
+                  {/* Main Slide Content: 2-Column Responsive Layout */}
+                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+                    
+                    {/* Left Column: Giant Stat & Metric Focus */}
+                    <div className="lg:col-span-5 flex flex-col items-start">
+                      <div className="w-14 h-14 rounded-2xl bg-[#00f59b]/15 border border-[#00f59b]/30 text-[#00f59b] flex items-center justify-center mb-5 shadow-lg shadow-[#00f59b]/10">
+                        <IconComponent className="w-7 h-7 stroke-[2.2]" />
+                      </div>
+
+                      <div className="font-mono text-5xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-b from-white via-white to-[#00f59b] mb-2">
+                        {pillar.stat}
+                      </div>
+
+                      <div className="text-xs sm:text-sm font-mono uppercase tracking-widest text-[#00f59b] font-semibold">
+                        {pillar.statLabel}
+                      </div>
+                    </div>
+
+                    {/* Right Column: Title, Narrative & Impact */}
+                    <div className="lg:col-span-7 flex flex-col items-start text-left">
+                      <h3 className="text-2xl sm:text-4xl font-bold text-white tracking-tight mb-4">
+                        {pillar.title}
+                      </h3>
+
+                      <p className="text-stone-300 text-base sm:text-lg leading-relaxed mb-6 font-normal">
+                        {pillar.desc}
+                      </p>
+
+                      {/* Deliverables / Value bullets */}
+                      <div className="w-full pt-4 border-t border-white/10 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div className="flex items-center gap-2.5 text-xs sm:text-sm text-stone-200">
+                          <span className="w-2 h-2 rounded-full bg-[#00f59b]" />
+                          <span>Purposeful Creative Direction</span>
+                        </div>
+                        <div className="flex items-center gap-2.5 text-xs sm:text-sm text-stone-200">
+                          <span className="w-2 h-2 rounded-full bg-[#00f59b]" />
+                          <span>Tested Audience Retention</span>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+
+                  {/* Slide Bottom Progress Bar Indicator */}
+                  <div className="mt-8 sm:mt-12 pt-6 border-t border-white/10 flex items-center justify-between text-xs text-stone-400">
+                    <span className="font-mono">
+                      Metric Strategy #{idx + 1}
+                    </span>
+
+                    {/* Interactive Dot Track */}
+                    <div className="flex items-center gap-1.5">
+                      {resultsPillars.map((_, dotIdx) => (
+                        <button
+                          key={dotIdx}
+                          type="button"
+                          onClick={() => setActiveIndex(dotIdx)}
+                          className={`transition-all duration-300 rounded-full cursor-pointer ${
+                            activeIndex === dotIdx
+                              ? 'w-6 h-2 bg-[#00f59b]'
+                              : 'w-2 h-2 bg-white/20 hover:bg-white/40'
+                          }`}
+                          aria-label={`Go to slide ${dotIdx + 1}`}
+                        />
+                      ))}
+                    </div>
+
+                    <span className="text-[#00f59b] font-mono hidden sm:inline">
+                      100% Proven Impact
+                    </span>
+                  </div>
+
+                </div>
+              );
+            })}
+          </div>
+
         </div>
 
-        {/* 4-Step Pipeline Flow */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
-          {workflowSteps.map((ws, wIdx) => (
-            <div
-              key={wIdx}
-              className="px-3.5 py-2.5 rounded-xl bg-white/5 border border-white/10 flex flex-col"
-            >
-              <div className="flex items-center justify-between mb-1">
-                <span className="font-mono text-[10px] text-[#00f59b] font-bold">{ws.step}</span>
-                {wIdx < 3 && <ArrowRight className="w-3 h-3 text-stone-600 hidden sm:inline" />}
-              </div>
-              <span className="text-xs font-bold text-white">{ws.name}</span>
-              <span className="text-[10px] text-stone-400 font-mono mt-0.5">{ws.desc}</span>
-            </div>
-          ))}
-        </div>
+        {/* Floating Left Navigation Arrow Button */}
+        <button
+          type="button"
+          onClick={prevSlide}
+          className="absolute -left-3 sm:-left-6 top-1/2 -translate-y-1/2 z-20 w-11 h-11 sm:w-13 sm:h-13 rounded-full bg-[#03150e]/90 hover:bg-[#00f59b] text-stone-200 hover:text-[#04160f] border border-[#00f59b]/30 hover:border-[#00f59b] flex items-center justify-center shadow-xl transition-all duration-300 hover:scale-110 active:scale-95 cursor-pointer backdrop-blur-md"
+          title="Previous focus point"
+          aria-label="Previous slide"
+        >
+          <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6 stroke-[2.5]" />
+        </button>
+
+        {/* Floating Right Navigation Arrow Button */}
+        <button
+          type="button"
+          onClick={nextSlide}
+          className="absolute -right-3 sm:-right-6 top-1/2 -translate-y-1/2 z-20 w-11 h-11 sm:w-13 sm:h-13 rounded-full bg-[#03150e]/90 hover:bg-[#00f59b] text-stone-200 hover:text-[#04160f] border border-[#00f59b]/30 hover:border-[#00f59b] flex items-center justify-center shadow-xl transition-all duration-300 hover:scale-110 active:scale-95 cursor-pointer backdrop-blur-md"
+          title="Next focus point"
+          aria-label="Next slide"
+        >
+          <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6 stroke-[2.5]" />
+        </button>
+
       </div>
 
     </section>
