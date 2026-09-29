@@ -26,6 +26,8 @@ export default function About({ onOpenContact }) {
               <img
                 src="/muzammil-about.jpg"
                 alt="Muzammil Portrait"
+                loading="lazy"
+                decoding="async"
                 className="w-full h-full object-cover object-top filter contrast-[1.03] group-hover:scale-105 transition-transform duration-700"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[#03170f] via-[#03170f]/30 to-transparent flex flex-col justify-end p-6 text-white">
