@@ -44,17 +44,8 @@ export default function Navbar({ onOpenContact }) {
     <header className="fixed top-0 left-0 right-0 z-50 transition-all duration-300 pointer-events-none px-4 sm:px-8 pt-4 sm:pt-6">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         
-        {/* Left Brand: Modern clean sans-serif matching reference "Aniviox" style */}
-        <a
-          href="#home"
-          className="pointer-events-auto flex items-center gap-1.5 group focus:outline-none"
-          aria-label="Muzammil Portfolio"
-        >
-          <span className="text-xl sm:text-2xl font-bold tracking-tight text-white group-hover:text-[#00f59b] transition-colors">
-            {personalInfo.name}
-          </span>
-          <span className="w-1.5 h-1.5 rounded-full bg-[#00f59b] inline-block mb-1" />
-        </a>
+        {/* Left spacer so central navigation pill remains centered */}
+        <div className="hidden md:block w-32 pointer-events-none" />
 
         {/* Center / Right Nav Links */}
         <nav
@@ -83,7 +74,7 @@ export default function Navbar({ onOpenContact }) {
         </nav>
 
         {/* Right CTA Button: Exact Pill Button matching reference "Get in touch" with green arrow */}
-        <div className="pointer-events-auto flex items-center gap-2 sm:gap-3">
+        <div className="pointer-events-auto ml-auto md:ml-0 flex items-center gap-2 sm:gap-3">
           <button
             onClick={onOpenContact}
             className="group flex items-center gap-2 pl-3.5 sm:pl-5 pr-1 sm:pr-1.5 py-1 sm:py-1.5 rounded-full bg-white text-[#04160f] font-bold text-xs sm:text-sm shadow-lg shadow-black/40 hover:bg-[#d1fae5] transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer"
