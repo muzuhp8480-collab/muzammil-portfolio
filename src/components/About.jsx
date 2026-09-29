@@ -24,7 +24,7 @@ export default function About({ onOpenContact }) {
           <div className="lg:col-span-5 flex flex-col items-center">
             <div className="relative w-full max-w-[340px] aspect-[4/5] rounded-3xl overflow-hidden border border-[#00f59b]/25 shadow-2xl bg-[#03150e] group">
               <img
-                src="/muzammil.jpg"
+                src="/muzammil-about.jpg"
                 alt="Muzammil Portrait"
                 className="w-full h-full object-cover object-top filter contrast-[1.03] group-hover:scale-105 transition-transform duration-700"
               />
